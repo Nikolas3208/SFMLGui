@@ -11,111 +11,78 @@ namespace SFMLGui.Widgets
 {
     public abstract class Widget : Transformable, Drawable
     {
-        protected RectangleShape? rect;
-        protected Text? text;
-        protected RenderWindow? window;
-        protected Font? Font { get => font; set { font = value; if (text != null) text.Font = value; } }
+        protected Vector2f baseRectSize = new Vector2f(80, 40);
 
-        protected bool IsRectVisible = true;
-        protected bool IsTextVisible = true;
-        protected bool IsClicked = false;
-        protected bool IsSelected = false;
-        protected bool IsHovered = false;
+        private bool isClicked = false;
+        private bool isSelected = false;
+        private bool isHovered = false;
 
-        private Vector2f size;
-        private Font? font;
+        protected RectangleShape rect;
+        protected Text text;
+       
+        public bool IsRectVisible = true;
+        public bool IsTextVisible = true;
 
-        public string strId { get; protected set; }
-        public bool LeaveРighlightСolor = false;
+        protected bool IsClicked { get => isClicked; set { isClicked = value; UpdateView(); } }
+        protected bool IsSelected { get => isSelected; set { isSelected = value; UpdateView(); } }
+        protected bool IsHovered { get => isHovered; set { isHovered = value; UpdateView(); } }
 
-        public Color BaseColorRect = Color.White;
-        public Color ClickedColorRect = new Color(64, 64, 64);
-        public Color SelectedColorRect = Color.Yellow;
-        public Color HoveredColorRect = new Color(128, 128, 128);
-        public Color BaseColorText = Color.Black;
+        public Color Color { get => rect.FillColor; set => rect.FillColor = value; }
 
-        public Vector2f Size { get => size; set { size = value; if(rect != null) rect!.Size = value; } }
+        public Color DefaultColorRect = Color.White;
+        public Color DefaultColorText = Color.Black;
+        public Color HoveredColor = new Color(255, 255, 130);
+        public Color SelectedColor = new Color(170, 170, 170);
+
+        public string strId { get; set; }
+
+        public virtual Font Font { get => text.Font; set { text.Font = value; UpdateText(); } }
+        public virtual uint TextSize {  get => text.CharacterSize; set { text.CharacterSize = value; UpdateText(); } }
+        public virtual string Text { get => text.DisplayedString; set { text.DisplayedString = value; UpdateText(); } }
+
+        public float OutlineThickness { get => rect.OutlineThickness; set => rect.OutlineThickness = value; }
+        public Vector2f Size { get => rect.Size; set { rect.Size = value; UpdateText(); } }
 
         public Widget(string strId)
         {
             this.strId = strId;
-        }
 
-        public void SetWindow(RenderWindow window)
-        {
-            this.window = window;
-
-            this.window.MouseMoved += Window_MouseMoved;
-            this.window.MouseButtonPressed += Window_MouseButtonPressed;
-            this.window.MouseButtonReleased += Window_MouseButtonReleased;
-        }
-
-        private void Window_MouseButtonReleased(object? sender, MouseButtonEventArgs e)
-        {
-            if(e.Button == Mouse.Button.Left)
+            rect = new RectangleShape()
             {
-                if(IsClicked)
-                {
-                    IsSelected = true;
-                    IsClicked = false;
-                }
-            }
+                Size = baseRectSize,
+                FillColor = DefaultColorRect,
+                OutlineColor = Color.Black,
+                OutlineThickness = -2
+            };
+
+            text = new Text()
+            {
+                CharacterSize = 25,
+                FillColor = DefaultColorText
+            };
         }
 
-        protected virtual void Window_MouseButtonPressed(object? sender, MouseButtonEventArgs e)
+        public virtual void SubscribeEvent(RenderWindow window)
         {
-            if(e.Button == Mouse.Button.Left)
-            {
-                if(IsHovered)
-                {
-                    IsClicked = true;
-                    IsHovered = false;
-                }
-                else
-                {
-                    IsClicked = false;
-                    IsSelected = false;
-                    IsHovered = false;
-                }
-            }
+            window.MouseMoved += Window_MouseMoved;
+            window.MouseButtonPressed += Window_MouseButtonPressed;
+            window.MouseButtonReleased += Window_MouseButtonReleased;
         }
 
-        private void Window_MouseMoved(object? sender, MouseMoveEventArgs e)
+        protected virtual void UpdateText()
         {
-            if (new FloatRect(e.X, e.Y, 10, 10).Intersects(GetFloatRect()))
-            {
-                IsHovered = true;
-            }
-            else
-                IsHovered = false;
+            text.Origin = new Vector2f(
+                text.GetGlobalBounds().Width / 2f,
+                text.GetGlobalBounds().Height / 2f);
+
+            text.Position = new Vector2f(
+                rect.GetGlobalBounds().Width / 2f,
+                rect.GetGlobalBounds().Height / 2.5f);
         }
 
-        public RenderWindow GetWindow() => window!;
-
-        public void SetFont(Font font) => Font = font;
-        public Font GetFont() => Font!;
-
-        public bool OnClicked() => IsClicked;
-        public bool OnSelected() => IsSelected;
-        public bool OnHovered() => IsHovered;
-
-        public FloatRect GetFloatRect() => new FloatRect(Position, Size);
-
-        public virtual void Update(float deltaTime)
+        protected virtual void UpdateRectSize()
         {
-            if (rect != null)
-            {
-                if (IsHovered)
-                    rect.FillColor = HoveredColorRect;
-                else
-                    rect.FillColor = BaseColorRect;
-                if (IsClicked)
-                    rect.FillColor = ClickedColorRect;
-                if(IsSelected && LeaveРighlightСolor)
-                    rect.FillColor = SelectedColorRect;
-                else if (!IsClicked && !IsHovered && !IsSelected && !LeaveРighlightСolor)
-                    rect.FillColor = BaseColorRect;
-            }
+            Size = new Vector2f(text.GetGlobalBounds().Width, text.GetGlobalBounds().Height);
         }
 
         public virtual void Draw(RenderTarget target, RenderStates states)
@@ -128,5 +95,17 @@ namespace SFMLGui.Widgets
             if(text != null && IsTextVisible)
                 target.Draw(text, states);
         }
+
+        public virtual bool OnClicked() => IsClicked;
+        public virtual bool OnSelected() => IsSelected;
+        public virtual bool OnHovered() => IsHovered;
+        public FloatRect GetFloatRect() => new FloatRect(Position, Size);
+
+        public virtual void Update(float deltaTime) { }
+        protected virtual void Window_MouseButtonReleased(object? sender, MouseButtonEventArgs e) { }
+        protected virtual void Window_MouseButtonPressed(object? sender, MouseButtonEventArgs e) { }
+        protected virtual void Window_MouseMoved(object? sender, MouseMoveEventArgs e) { }
+
+        protected abstract void UpdateView();
     }
 }

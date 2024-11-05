@@ -11,6 +11,7 @@ namespace SFMLGui.Widgets
     {
         private List<Widget> widgets;
         private RenderWindow window;
+        private Font font;
 
         public string Name;
 
@@ -22,7 +23,7 @@ namespace SFMLGui.Widgets
             widgets = new List<Widget>();
         }
 
-        public void AddWidget(Widget widget) { widget.SetWindow(window); widgets.Add(widget); }
+        public void AddWidget(Widget widget) { widget.SubscribeEvent(window); if (font != null && widget.Font == null) widget.Font = font; widgets.Add(widget); }
 
         public T GetWidgetByType<T>(string strId) where T : Widget
         {
@@ -65,6 +66,9 @@ namespace SFMLGui.Widgets
 
             return false;
         }
+
+        public void SetFont(Font font) => this.font = font;
+        public Font GetFont() => this.font;
 
         public void Update(float deltaTime = 0)
         {

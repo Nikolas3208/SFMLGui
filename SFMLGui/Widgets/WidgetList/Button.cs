@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,36 +12,35 @@ namespace SFMLGui.Widgets.WidgetList
 {
     public class Button : Widget
     {
-        public Button(string strId, string mess) : base(strId)
-        {
-            rect = new RectangleShape();
-            rect.FillColor = BaseColorRect;
-            Size = new Vector2f(100, 50);
+        public delegate void ClickHandler(Button button);
+        public event ClickHandler Click;
 
-            text = new Text();
-            text.FillColor = BaseColorText;
-            text.DisplayedString = mess;
+        public Button(string strId) : base(strId)
+        {
         }
 
-        public Button(string strId, string mess, Vector2f size) : base(strId)
+        public Button(string strId, string text) : base(strId)
         {
-            rect = new RectangleShape(size);
-            rect.FillColor = BaseColorRect;
-            Size = size;
-
-            text = new Text();
-            text.FillColor = BaseColorText;
-            text.DisplayedString = mess;
+            Text = text;
         }
 
-        public Button(string strId, string mess, Vector2f size, Font font) : base(strId)
+        protected override void Window_MouseMoved(object? sender, MouseMoveEventArgs e)
         {
-            rect = new RectangleShape(size);
-            rect.FillColor = BaseColorRect;
-            Size = size;
+            if (new FloatRect(e.X, e.Y, 10, 10).Intersects(GetFloatRect()))
+            {
+                IsHovered = true;
+            }
+            else
+                IsHovered = false;
+        }
 
-            text = new Text(mess, font);
-            text.FillColor = BaseColorText;
+        protected override void UpdateView()
+        {
+            if (IsHovered)
+                Color = HoveredColor;
+
+            if (!IsHovered)
+                Color = DefaultColorRect;
         }
     }
 }
