@@ -35,10 +35,10 @@ namespace SFMLGui
 
             layer.AddWidget(new Lable("lb_1", "Hello my frends"));
 
-            TextBox textBox = new TextBox("tb_1");
-            textBox.Position = new Vector2f(400, 500);
+            Lable lable = new Lable("lb_1", "");
+            lable.Position = new Vector2f(200, 400);
 
-            layer.AddWidget(textBox);
+            layer.AddWidget(lable);
 
 
             while (window.IsOpen)
@@ -51,7 +51,13 @@ namespace SFMLGui
 
                 layer.Update(deltaTime);
                 layer.GetWidgetByStrId("lb_1").Text = $"FPS: {(int)(1 / deltaTime)}";
-                //button2.Position = new Vector2f(button2.Position.X + 30 * deltaTime, button2.Position.Y);
+                lable.Text = $"Hovered: {button2.OnHovered()}, Clicked: {button2.OnClicked()}, Selected: {button2.OnSelected()}";
+
+                if(button2.OnClicked())
+                {
+                    i++;
+                    button2.Text = $"Clicked: {i}";
+                }
 
                 window.Draw(layer);
 

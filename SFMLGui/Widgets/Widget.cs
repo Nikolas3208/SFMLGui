@@ -33,6 +33,7 @@ namespace SFMLGui.Widgets
         public Color DefaultColorText = Color.Black;
         public Color HoveredColor = new Color(255, 255, 130);
         public Color SelectedColor = new Color(170, 170, 170);
+        public Color ClickColor = new Color(0, 0, 0);
 
         public string strId { get; set; }
 
@@ -104,7 +105,10 @@ namespace SFMLGui.Widgets
         public virtual void Update(float deltaTime) { }
         protected virtual void Window_MouseButtonReleased(object? sender, MouseButtonEventArgs e) { }
         protected virtual void Window_MouseButtonPressed(object? sender, MouseButtonEventArgs e) { }
-        protected virtual void Window_MouseMoved(object? sender, MouseMoveEventArgs e) { }
+        protected virtual void Window_MouseMoved(object? sender, MouseMoveEventArgs e) 
+        {
+            IsHovered = GetFloatRect().Contains(e.X, e.Y);
+        }
 
         protected abstract void UpdateView();
     }
