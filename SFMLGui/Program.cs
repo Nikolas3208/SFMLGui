@@ -20,13 +20,9 @@ namespace SFMLGui
             window.Closed += Window_Closed;
 
             GuiWindow guiWindow = new GuiWindow(window, "Test");
-            guiWindow.SetFont(new Font("C:\\Windows\\Fonts\\Arial.ttf"));
             guiWindow.Position = new Vector2f(200, 400);
+            guiWindow.SetFont(new Font("C:\\Windows\\Fonts\\Arial.ttf"));
             guiWindow.InitTitleBar();
-
-            Button button = new Button("");
-            button.Font = new Font("C:\\Windows\\Fonts\\Arial.ttf");
-            button.SubscribeEvent(window);
 
 
             while (window.IsOpen)
@@ -37,17 +33,17 @@ namespace SFMLGui
 
                 float deltaTime = clock.Restart().AsSeconds();
 
-                guiWindow.Update(deltaTime);
+                if (guiWindow != null)
+                {
+                    guiWindow.Update(deltaTime);
 
-                window.Draw(guiWindow);
+                    window.Draw(guiWindow);
+                    if (guiWindow.IsClouse)
+                        guiWindow = null;
+                }
 
                 window.Display();
             }
-        }
-
-        private static void Button_Click(Button button)
-        {
-            button.Text = "Hello";
         }
 
         private static void Window_Closed(object? sender, EventArgs e)

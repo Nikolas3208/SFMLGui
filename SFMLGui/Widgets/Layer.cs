@@ -1,4 +1,5 @@
 ﻿using SFML.Graphics;
+using SFML.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace SFMLGui.Widgets
         private List<Widget> widgets;
         private RenderWindow window;
         private Font font;
+
+        private Vector2f position;
+
+        public new Vector2f Position { get => position; set { position = value; } }
 
         public string Name;
         public uint Id = 0;
@@ -30,6 +35,7 @@ namespace SFMLGui.Widgets
             if (!ContainsStrId(widget.strId))
             {
                 widget.SubscribeEvent(window);
+                widget.Position += Position;
                 if (font != null && widget.Font == null)
                     widget.Font = font;
                 widgets.Add(widget);
@@ -37,6 +43,14 @@ namespace SFMLGui.Widgets
             else
             {
                 throw new Exception("This strId is already taken");
+            }
+        }
+
+        public void UpdatePosition(Vector2f pos)
+        {
+            foreach (var widget in widgets)
+            {
+                widget.Position += pos;
             }
         }
 
@@ -106,7 +120,7 @@ namespace SFMLGui.Widgets
 
         public void Draw(RenderTarget target, RenderStates states)
         {
-            states.Transform *= Transform;
+            //states.Transform *= Transform;
 
             foreach (var widget in widgets)
             {

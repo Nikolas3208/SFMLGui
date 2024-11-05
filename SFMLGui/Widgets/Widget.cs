@@ -28,6 +28,7 @@ namespace SFMLGui.Widgets
         protected bool IsHovered { get => isHovered; set { isHovered = value; UpdateView(); } }
 
         public Color Color { get => rect.FillColor; set => rect.FillColor = value; }
+        public Color OutlineColor { get => rect.OutlineColor; set => rect.OutlineColor = value; }
 
         public Color DefaultColorRect = Color.White;
         public Color DefaultColorText = Color.Black;
@@ -112,7 +113,7 @@ namespace SFMLGui.Widgets
         public virtual bool OnClicked() => IsClicked;
         public virtual bool OnSelected() => IsSelected;
         public virtual bool OnHovered() => IsHovered;
-        public FloatRect GetFloatRect() => new FloatRect(Position, Size);
+        public FloatRect GetFloatRect() => new FloatRect(Position - (Size / 2), Size);
 
         public virtual void Update(float deltaTime) { }
         protected virtual void Window_MouseButtonReleased(object? sender, MouseButtonEventArgs e) { }
