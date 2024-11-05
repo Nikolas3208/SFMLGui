@@ -23,7 +23,20 @@ namespace SFMLGui.Widgets
             widgets = new List<Widget>();
         }
 
-        public void AddWidget(Widget widget) { widget.SubscribeEvent(window); if (font != null && widget.Font == null) widget.Font = font; widgets.Add(widget); }
+        public void AddWidget(Widget widget)
+        {
+            if (!ContainsStrId(widget.strId))
+            {
+                widget.SubscribeEvent(window);
+                if (font != null && widget.Font == null)
+                    widget.Font = font;
+                widgets.Add(widget);
+            }
+            else
+            {
+                throw new Exception("This strId is already taken");
+            }
+        }
 
         public T GetWidgetByType<T>(string strId) where T : Widget
         {
@@ -44,6 +57,17 @@ namespace SFMLGui.Widgets
             }
 
             return null;
+        }
+
+        public bool ContainsStrId(string strId)
+        {
+            foreach (var widget in widgets)
+            {
+                if(widget.strId == strId)
+                    return true;
+            }
+
+            return false;
         }
 
         public void RemoveWidget(Widget widget) => widgets.Remove(widget);

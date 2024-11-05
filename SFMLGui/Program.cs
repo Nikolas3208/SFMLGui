@@ -40,6 +40,8 @@ namespace SFMLGui
 
             layer.AddWidget(lable);
 
+            layer.AddWidget(new Lable("lb_1", ""));
+
 
             while (window.IsOpen)
             {
