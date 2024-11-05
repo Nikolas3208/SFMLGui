@@ -44,6 +44,18 @@ namespace SFMLGui.Widgets
         public float OutlineThickness { get => rect.OutlineThickness; set => rect.OutlineThickness = value; }
         public Vector2f Size { get => rect.Size; set { rect.Size = value; UpdateText(); } }
 
+        public Texture Texture
+        {
+            get => rect.Texture;
+            set => rect.Texture = value;
+        }
+
+        public IntRect TextureRect
+        {
+            get => rect.TextureRect;
+            set => rect.TextureRect = value;
+        }
+
         public Widget(string strId)
         {
             this.strId = strId;
@@ -107,7 +119,10 @@ namespace SFMLGui.Widgets
         protected virtual void Window_MouseButtonPressed(object? sender, MouseButtonEventArgs e) { }
         protected virtual void Window_MouseMoved(object? sender, MouseMoveEventArgs e) 
         {
-            IsHovered = GetFloatRect().Contains(e.X, e.Y);
+            if (GetFloatRect().Contains(e.X, e.Y))
+                IsHovered = true;
+            else
+                IsHovered = false;
         }
 
         protected abstract void UpdateView();

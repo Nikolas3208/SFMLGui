@@ -78,6 +78,8 @@ namespace SFMLGui.Widgets.WidgetList
             if(IsPressed && !triger)
             {
                 IsClicked = true;
+                if (Click != null)
+                    Click(this);
                 triger = true;
             }
             else if(IsPressed && triger)

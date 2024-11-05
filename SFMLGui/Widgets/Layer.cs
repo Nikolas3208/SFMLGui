@@ -14,6 +14,8 @@ namespace SFMLGui.Widgets
         private Font font;
 
         public string Name;
+        public uint Id = 0;
+        public uint Depth = 0;
 
         public Layer(RenderWindow window, string name)
         {
@@ -94,7 +96,7 @@ namespace SFMLGui.Widgets
         public void SetFont(Font font) => this.font = font;
         public Font GetFont() => this.font;
 
-        public void Update(float deltaTime = 0)
+        public void Update(float deltaTime)
         {
             foreach (var widget in widgets)
             {

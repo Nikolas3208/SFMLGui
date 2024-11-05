@@ -19,49 +19,27 @@ namespace SFMLGui
             window.Resized += Window_Resized;
             window.Closed += Window_Closed;
 
-            Layer layer = new Layer(window, "leyer");
-            layer.SetFont(new Font("C:\\Windows\\Fonts\\Arial.ttf"));
+            GuiWindow guiWindow = new GuiWindow(window, "Test");
+            guiWindow.SetFont(new Font("C:\\Windows\\Fonts\\Arial.ttf"));
+            guiWindow.Position = new Vector2f(200, 400);
+            guiWindow.InitTitleBar();
 
-            Button button = new Button("bt_1");
-            button.Position = new Vector2f(100, 500);
-            button.Click += Button_Click;
-
-            layer.AddWidget(button);
-
-            Button button2 = new Button("bt_2", "Hello");
-            button2.Position = new Vector2f(1000, 500);
-
-            layer.AddWidget(button2);
-
-            layer.AddWidget(new Lable("lb_1", "Hello my frends"));
-
-            Lable lable = new Lable("lb_1", "");
-            lable.Position = new Vector2f(200, 400);
-
-            layer.AddWidget(lable);
-
-            layer.AddWidget(new Lable("lb_1", ""));
+            Button button = new Button("");
+            button.Font = new Font("C:\\Windows\\Fonts\\Arial.ttf");
+            button.SubscribeEvent(window);
 
 
             while (window.IsOpen)
             {
                 window.DispatchEvents();
 
-                window.Clear(Color.White);
+                window.Clear(Color.Cyan);
 
                 float deltaTime = clock.Restart().AsSeconds();
 
-                layer.Update(deltaTime);
-                layer.GetWidgetByStrId("lb_1").Text = $"FPS: {(int)(1 / deltaTime)}";
-                lable.Text = $"Hovered: {button2.OnHovered()}, Clicked: {button2.OnClicked()}, Selected: {button2.OnSelected()}";
+                guiWindow.Update(deltaTime);
 
-                if(button2.OnClicked())
-                {
-                    i++;
-                    button2.Text = $"Clicked: {i}";
-                }
-
-                window.Draw(layer);
+                window.Draw(guiWindow);
 
                 window.Display();
             }
