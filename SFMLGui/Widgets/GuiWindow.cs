@@ -88,6 +88,7 @@ namespace SFMLGui.Widgets
             title.Position = new Vector2f(5, titleBarRect.GetGlobalBounds().Height / 2);
 
             Button hide = new Button("hide");
+            hide.Scale = new Vector2f(1, -1);
             hide.OutlineColor = Color.White;
             hide.Texture = new Texture("Hide.png");
             hide.Size = new Vector2f(20, 20);
@@ -153,6 +154,9 @@ namespace SFMLGui.Widgets
 
         public void AddWidget(Widget widget)
         {
+            widget.Origin = widget.Size / 2;
+
+            widget.Position += new Vector2f(widget.Size.X / 2 + 5, widget.Size.Y / 2 + titleBarSize.Y + 5);
             windowLayer.AddWidget(widget);
         }
 
@@ -165,7 +169,7 @@ namespace SFMLGui.Widgets
         public FloatRect GetWindowRect() => new FloatRect(windowRect.Position, windowSize);
         public FloatRect GetTitleBarRect() => new FloatRect(titleBarRect.Position, titleBarSize);
 
-        public void SetFont(Font font) => titleBarLayer.SetFont(font);
+        public void SetFont(Font font) { titleBarLayer.SetFont(font); windowLayer.SetFont(font); }
 
         private void UpdatePosition(Vector2f pos)
         {
@@ -174,6 +178,9 @@ namespace SFMLGui.Widgets
 
             titleBarLayer.Position += pos;
             titleBarLayer.UpdatePosition(pos);
+
+            windowLayer.Position += pos;
+            windowLayer.UpdatePosition(pos);
         }
         private void Close_Click(Button button)
         {
@@ -183,6 +190,10 @@ namespace SFMLGui.Widgets
         private void Hide_Click(Button button)
         {
             windowRectVisible = !windowRectVisible;
+            if (windowRectVisible)
+                button.Scale = new Vector2f(1, -1);
+            else
+                button.Scale = new Vector2f(1, 1);
         }
 
         private void Window_MouseButtonReleased(object? sender, MouseButtonEventArgs e)

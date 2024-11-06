@@ -120,8 +120,6 @@ namespace SFMLGui.Widgets
 
         public void Draw(RenderTarget target, RenderStates states)
         {
-            //states.Transform *= Transform;
-
             foreach (var widget in widgets)
             {
                 widget.Draw(target, states);

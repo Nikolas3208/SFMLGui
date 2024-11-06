@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 
 namespace SFMLGui.Widgets
 {
+    public enum WidgetStyle
+    {
+        Default,
+        AutoResize
+    }
     public abstract class Widget : Transformable, Drawable
     {
         protected Vector2f baseRectSize = new Vector2f(80, 40);
@@ -16,6 +21,9 @@ namespace SFMLGui.Widgets
         private bool isClicked = false;
         private bool isSelected = false;
         private bool isHovered = false;
+        private bool autoResize = false;
+
+        private WidgetStyle style;
 
         protected RectangleShape rect;
         protected Text text;
@@ -57,9 +65,10 @@ namespace SFMLGui.Widgets
             set => rect.TextureRect = value;
         }
 
-        public Widget(string strId)
+        public Widget(string strId, WidgetStyle style = WidgetStyle.Default)
         {
             this.strId = strId;
+            this.style = style;
 
             rect = new RectangleShape()
             {
@@ -74,6 +83,12 @@ namespace SFMLGui.Widgets
                 CharacterSize = 25,
                 FillColor = DefaultColorText
             };
+
+            if (style == WidgetStyle.AutoResize)
+            {
+                Size = new Vector2f(text.GetGlobalBounds().Width + 10, text.GetGlobalBounds().Height + TextSize);
+                autoResize = true;
+            }
         }
 
         public virtual void SubscribeEvent(RenderWindow window)
@@ -115,7 +130,13 @@ namespace SFMLGui.Widgets
         public virtual bool OnHovered() => IsHovered;
         public FloatRect GetFloatRect() => new FloatRect(Position - (Size / 2), Size);
 
-        public virtual void Update(float deltaTime) { }
+        public virtual void Update(float deltaTime)
+        {
+            if(autoResize)
+            {
+                Size = new Vector2f(text.GetGlobalBounds().Width + 10, text.GetGlobalBounds().Height + TextSize);
+            }
+        }
         protected virtual void Window_MouseButtonReleased(object? sender, MouseButtonEventArgs e) { }
         protected virtual void Window_MouseButtonPressed(object? sender, MouseButtonEventArgs e) { }
         protected virtual void Window_MouseMoved(object? sender, MouseMoveEventArgs e) 

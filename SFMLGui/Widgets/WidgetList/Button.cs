@@ -19,7 +19,7 @@ namespace SFMLGui.Widgets.WidgetList
         private bool IsReleased = false;
         private bool triger = false;
 
-        public Button(string strId) : base(strId)
+        public Button(string strId, WidgetStyle style = WidgetStyle.Default) : base(strId, style)
         {
         }
 
@@ -75,6 +75,8 @@ namespace SFMLGui.Widgets.WidgetList
 
         public override void Update(float deltaTime)
         {
+            base.Update(deltaTime);
+
             if(IsPressed && !triger)
             {
                 IsClicked = true;
